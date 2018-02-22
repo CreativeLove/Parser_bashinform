@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import random
 import requests
+import csv
 from bs4 import BeautifulSoup
 
 def get_html(url):
@@ -12,18 +13,30 @@ def get_html(url):
     return response.text
 
 def parse(html):
-    soup = BeautifulSoup(html, 'lxml')
+    soup = BeautifulSoup(html, 'html.parser')
     articles = soup.find_all('article')
+    rows = []
     for article in articles:
         names = article.find_all('a', 'name')
-        if (len(names) > 0):
-            print('-----------------')
-            for i in range(len(names)):
-                print(names[i].text)
-                print(names[i].attrs['href'])
+        for i in range(len(names)):
+            link = names[i].attrs['href']
+            if (link[0] == '/'):
+                    link = 'http://www.bashinform.ru' + link
+            rows.append((names[i].get_text(), link))
+            print(names[i].get_text())
+            print(link)
+    return rows
+
+def printCSV(rows):
+    f = open("bashinform.csv", "wb")
+    wr = csv.writer(f, delimiter=";")
+    for i in range(len(rows)):
+        wr.writerow({wr[i].first, wr[i].second})
+    f.close()
+    
 
 def main():
-    print(parse(get_html('http://www.bashinform.ru')))
+    printCSV(parse(get_html('http://www.bashinform.ru')))
 
 
 if __name__ == '__main__':
