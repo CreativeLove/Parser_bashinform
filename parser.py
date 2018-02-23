@@ -23,17 +23,21 @@ def get_html(url):
 # Получаем внутреннее содержимое страницы
 def parse(html):
     soup = BeautifulSoup(html, 'html.parser') # Подключаем Html parser
-    articles = soup.select('article > h2 > a') # Находим все теги a с классом name (article)
 
-    for article in articles:
-    	name = article.text    # Название  
-    	href = article.attrs['href']    # Ссылка на article  
-    	if (href[0:6] == "/news/"):
-            print(name)
-            print(url + href)
-            data = [name, url + href]
+    name_mass = soup.select('article > h2 > a') # Находим все названия статей
+    description_mass = soup.select('article > .trailer > p') # Находим все теги a
+
+    for i in range(len(name_mass)):
+        name = name_mass[i].text
+        href = name_mass[i].attrs['href']
+        description = description_mass[i].text
+        if (href[0:6] == "/news/"):
+            print(name) # Название статьи 
+            print(url + href) # Ссылка на статью
+            print(description)
+            data = [name, url + href, description]
             printCSV(data)
-            print("")
+            print("")   
 
 
 
@@ -45,6 +49,7 @@ def printCSV(data):
 
 
 def main():
+    printCSV(['Название', 'Ссылка', 'Краткое содержание'])
     for i in range(1, 23):
         print(i)
         parse(get_html('http://www.bashinform.ru/news-list-2/2018/02/' + str(i) + '/'))
@@ -54,4 +59,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-asdfsdfsdfsadf
