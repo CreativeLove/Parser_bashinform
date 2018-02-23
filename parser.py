@@ -3,6 +3,14 @@ import csv
 from bs4 import BeautifulSoup
 
 
+
+
+url = 'http://www.bashinform.ru'
+f = open("bashinform.csv", "w", newline="")
+
+
+
+
 # Получаем адрес, который будем парсить
 # Возвратим все элементы (теги) страницы
 def get_html(url): 
@@ -15,30 +23,32 @@ def get_html(url):
 # Получаем внутреннее содержимое страницы
 def parse(html):
     soup = BeautifulSoup(html, 'html.parser') # Подключаем Html parser
-    articles = soup.find_all('a', 'name') # Находим все теги a с классом name (article)
+    articles = soup.select('article > h2 > a') # Находим все теги a с классом name (article)
 
     for article in articles:
-    	name = article.text    # Содержимое article  
+    	name = article.text    # Название  
     	href = article.attrs['href']    # Ссылка на article  
-    	if (href[0:5] == "/news"):
+    	if (href[0:6] == "/news/"):
             print(name)
-            print(href)
-            data = [name, href]
+            print(url + href)
+            data = [name, url + href]
             printCSV(data)
-            print("ololo")
+            print("")
+
+
 
 # Выводит в формат CSV
 def printCSV(data):
     wr = csv.writer(f, delimiter=";")   
     wr.writerow(data)
-    
+
+
 
 def main():
-    with open("bashinform.csv", "w", newline="") as f:
-           
-        parse(get_html('http://www.bashinform.ru'))
-    f.close()
-    # printCSV(["One", "Two", "Three"])
+    for i in range(1, 23):
+        print(i)
+        parse(get_html('http://www.bashinform.ru/news-list-2/2018/02/' + str(i) + '/'))
+    f.close()    
 
 
 if __name__ == '__main__':
