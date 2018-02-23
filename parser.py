@@ -12,7 +12,7 @@ def get_html(url):
 
 
 
-# Получаем внутренне содержимое страницы
+# Получаем внутреннее содержимое страницы
 def parse(html):
     soup = BeautifulSoup(html, 'html.parser') # Подключаем Html parser
     articles = soup.find_all('a', 'name') # Находим все теги a с классом name (article)
@@ -21,23 +21,26 @@ def parse(html):
     	name = article.text    # Содержимое article  
     	href = article.attrs['href']    # Ссылка на article  
     	if (href[0:5] == "/news"):
-    		print(name)
-    		print(href)
-    		print("")
-    		data = [name, href]
-    		printCSV(data)
+            print(name)
+            print(href)
+            data = [name, href]
+            printCSV(data)
+            print("ololo")
 
 # Выводит в формат CSV
 def printCSV(data):
-    with open("bashinform.csv", "w", newline="") as f:
-    	wr = csv.writer(f, delimiter=";")
-    	wr.writerow(data)
+    wr = csv.writer(f, delimiter=";")   
+    wr.writerow(data)
     
 
 def main():
-    # parse(get_html('http://www.bashinform.ru'))
-    printCSV(["One", "Two", "Three"])
+    with open("bashinform.csv", "w", newline="") as f:
+           
+        parse(get_html('http://www.bashinform.ru'))
+    f.close()
+    # printCSV(["One", "Two", "Three"])
 
 
 if __name__ == '__main__':
     main()
+
