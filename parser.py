@@ -24,7 +24,7 @@ def parse(html):
         if (len(article.find_all('h2')) == 0):
             continue
         name = article.find_all('h2')[0].find_all('a')[0].text
-        link = article.find_all('h2')[0].find_all('a')[0].attrs['href']
+        link = "http://www.bashinform.ru" + article.find_all('h2')[0].find_all('a')[0].attrs['href']
         trailer = article.find_all(class_='trailer')[0].find_all('p')[0].text
         rows.append((name, trailer, link))
         print(name)
@@ -65,7 +65,7 @@ def main():
     curMonth = datetime.datetime.now().month
     curYear = datetime.datetime.now().year
     with open("bashinform.csv", "w") as csvFile:
-        csvWriter = csv.writer(csvFile, quotechar=';')
+        csvWriter = csv.writer(csvFile, delimiter='\t')
         while True:
             print(str(year)+' '+str(month)+' '+str(day))
             printCSV(parse(get_html('http://www.bashinform.ru/news-list-2/' + str(year) + "/" + str(month).zfill(2) + '/' + str(day).zfill(2) + '/')), csvWriter)
